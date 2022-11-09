@@ -16,13 +16,12 @@ class DirectorSerializers(serializers.ModelSerializer):
 
 
 class MovieSerializers(serializers.ModelSerializer):
-    reviews = ReviewSerializers(many=True)
-    director = DirectorSerializers()
+    reviews = ReviewSerializers(many=True, read_only=True)
+    director = DirectorSerializers(read_only=True)
 
     class Meta:
         model = Movie
-        fields = 'id title description duration director reviews rating'.split()
-        # fields = 'id title description'.split()
+        fields = 'id title description director reviews duration'.split()
         # exclude = 'id'.split()
 
 
@@ -40,13 +39,20 @@ class DirectorCountSerializer(serializers.ModelSerializer):
 class MovieValidateUpdateSerializer(serializers.Serializer):
     title = serializers.CharField(min_length=3, max_length=50)
     description = serializers.CharField()
-    duration = serializers.IntegerField(required=False)
+    duration = serializers.IntegerField()
     director_id = serializers.IntegerField()
 
     def validate_title(self, title):
         if Movie.objects.filter(title=title):
             raise ValidationError("Select unique name for your movie")
         return title
+
+    class Meta:
+        fields = '__all__'
+
+    def create(self, validated_data):
+        return Movie.objects.create(**validated_data)
+
 
 
 class ReviewValidateSerializer(serializers.Serializer):

@@ -41,13 +41,17 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'main',
     'users',
+    'drf_yasg',
+    
+
 
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication'
-    ]
+    ],
+    'PAGE_SIZE': 5
 }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
